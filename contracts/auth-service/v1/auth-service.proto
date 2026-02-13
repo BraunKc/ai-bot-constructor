@@ -1,0 +1,34 @@
+syntax = "proto3";
+package authv1;
+option go_package = "github.com/braunkc/ai-bot-constructor/auth-service;authpb";
+
+import "google/protobuf/empty.proto";
+
+service Auth {
+    rpc Register (AuthReq) returns (Token);
+    rpc Login (AuthReq) returns (Token);
+    // METADATA: jwt token of user
+    rpc GetUser (google.protobuf.Empty) returns (User);
+    // METADATA: jwt token of user
+    rpc UpdateUser (UpdateUserReq) returns (User);
+    // METADATA: jwt token of user
+    rpc DeleteUser (google.protobuf.Empty) returns (google.protobuf.Empty);
+}
+
+message Token {
+    string token = 1; // jwt
+}
+
+message User {
+    string id = 1; // uuid
+    string username = 2;
+}
+
+message AuthReq {
+    string username = 1;
+    string password = 2;
+}
+
+message UpdateUserReq {
+    string new_username = 1;
+}
