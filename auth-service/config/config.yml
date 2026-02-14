@@ -1,3 +1,4 @@
+env: develop
 grpc:
   host: ${GRPC_HOST}
   port: ${GRPC_PORT}

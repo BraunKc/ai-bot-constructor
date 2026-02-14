@@ -69,3 +69,7 @@ func NewPasswordHash(password string, hasher Hasher) (PasswordHash, error) {
 func (ph PasswordHash) Compare(password string, hasher Hasher) bool {
 	return hasher.Compare(string(ph), password)
 }
+
+func (ph PasswordHash) String() string {
+	return string(ph)
+}

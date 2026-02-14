@@ -7,6 +7,12 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
+const (
+	Develop Env = "develop"
+)
+
+type Env string
+
 type GRPCConfig struct {
 	Host string `yaml:"host"`
 	Port string `yaml:"port"`
@@ -21,6 +27,7 @@ type DBConfig struct {
 }
 
 type Config struct {
+	Env  Env        `yaml:"env"`
 	GRPC GRPCConfig `yaml:"grpc"`
 	DB   DBConfig   `yaml:"db"`
 }
