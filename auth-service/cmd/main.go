@@ -5,10 +5,15 @@ import (
 	"os"
 
 	"github.com/braunkc/ai-bot-constructor/auth-service/config"
-	databaserepo "github.com/braunkc/ai-bot-constructor/auth-service/internal/infra/database"
+	userusecase "github.com/braunkc/ai-bot-constructor/auth-service/internal/application/usecase/user"
+	"github.com/braunkc/ai-bot-constructor/auth-service/internal/infra/database"
+	orchestratorgrpc "github.com/braunkc/ai-bot-constructor/auth-service/internal/infra/grpc/orchestrator"
+	hasherinfra "github.com/braunkc/ai-bot-constructor/auth-service/internal/infra/hasher"
+	"github.com/braunkc/ai-bot-constructor/auth-service/internal/infra/jwt"
 	userpersistence "github.com/braunkc/ai-bot-constructor/auth-service/internal/infra/persistence/user"
 	"github.com/braunkc/ai-bot-constructor/auth-service/pkg/log"
 	"github.com/joho/godotenv"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {
@@ -36,7 +41,7 @@ func main() {
 	}
 	log := slog.New(h)
 
-	db, err := databaserepo.New(&cfg.DB)
+	db, err := database.New(&cfg.DB)
 	if err != nil {
 		log.Error("failed to create database repository", slog.Any("err", err))
 		os.Exit(1)
@@ -52,4 +57,21 @@ func main() {
 
 	userRepo := userpersistence.NewRepo(db, log)
 	log.Info("user repository created")
+
+	orchestratorClient, err := orchestratorgrpc.NewClient(&cfg.GRPC.OrchestratorService, log)
+	if err != nil {
+		log.Error("failed to create orchestrator grpc client", slog.Any("err", err))
+		os.Exit(1)
+	}
+	log.Info("orchestrator client created")
+
+	tokenManager, err := jwt.NewTokenManager(os.Getenv("SECRET_KEY"))
+	if err != nil {
+		log.Error("failed to create token manager", slog.Any("err", err))
+		os.Exit(1)
+	}
+	log.Info("token manager created")
+
+	userUsecase := userusecase.New(userRepo, orchestratorClient, tokenManager, &hasherinfra.Hasher{Cost: bcrypt.DefaultCost}, log)
+	log.Info("user usecase created")
 }

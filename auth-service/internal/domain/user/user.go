@@ -7,9 +7,10 @@ import (
 )
 
 var (
-	ErrDuplicatedKey      = errors.New("username already exists")
-	ErrRecordNotFound     = errors.New("user not found")
-	ErrInvalidStorageData = errors.New("invalid storage data")
+	ErrDuplicatedKey             = errors.New("username already exists")
+	ErrRecordNotFound            = errors.New("user not found")
+	ErrInvalidStorageData        = errors.New("invalid storage data")
+	ErrInvalidUsernameOrPassword = errors.New("invalid username or password")
 )
 
 type User struct {
