@@ -5,6 +5,7 @@ import (
 
 	userdomain "github.com/braunkc/ai-bot-constructor/auth-service/internal/domain/user"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -13,6 +14,7 @@ type User struct {
 	PasswordHash string    `gorm:"type:varchar(255);not null"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
+	DeletedAt    gorm.DeletedAt
 }
 
 func userDomainToDBModel(user *userdomain.User) *User {
