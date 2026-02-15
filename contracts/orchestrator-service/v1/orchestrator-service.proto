@@ -1,0 +1,115 @@
+syntax = "proto3";
+package orchestratorv1;
+option go_package = "github.com/braunkc/ai-bot-constructor/orchestrator-service;orchestratorpb";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service Orchestrator {
+    // METADATA: jwt token of user
+    rpc CreateBot(CreateBotReq) returns (Bot);
+    // METADATA: jwt token of user
+    rpc GetBot(GetBotReq) returns (Bot);
+    // METADATA: jwt token of user
+    rpc GetAllBots(google.protobuf.Empty) returns (GetAllBotsResp);
+    // METADATA: jwt token of user
+    rpc StopBot(StopBotReq) returns (Bot);
+    // METADATA: jwt token of user
+    rpc StopBots(StopBotsReq) returns (StopBotsResp);
+    // METADATA: jwt token of user
+    rpc StartBot(StartBotReq) returns (Bot);
+    // METADATA: jwt token of user
+    rpc StartBots(StartBotsReq) returns (StartBotsResp);
+    // METADATA: jwt token of user
+    rpc RestartBot(RestartBotReq) returns (RestartBotsResp);
+    // METADATA: jwt token of user
+    rpc DeleteBot(DeleteBotReq) returns (google.protobuf.Empty);
+    // METADATA: jwt token of user
+    rpc DeleteBots(DeleteBotsReq) returns (DeleteBotsResp);
+    // METADATA: jwt token of user
+    rpc DeleteAllBots(google.protobuf.Empty) returns (DeleteAllBotsResp);
+}
+
+enum BotStatus {
+    BOT_STATUS_UNKNOWN = 0;
+    BOT_STATUS_CREATING = 1;
+    BOT_STATUS_STARTING = 2;
+    BOT_STATUS_RUNNING = 3;
+    BOT_STATUS_STOPPING = 4;
+    BOT_STATUS_STOPPED = 5;
+    BOT_STATUS_DELETING = 6;
+    BOT_STATUS_ERROR = 7;
+}
+
+message Bot {
+    string id = 1;
+    string user_id = 2;
+    BotStatus status = 3;
+    string name = 4;
+    string last_error = 5;
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+}
+
+message CreateBotReq {
+    string name = 1;
+}
+
+message GetBotReq {
+    string id = 1;
+}
+
+message GetAllBotsResp {
+    repeated Bot bots = 1;
+}
+
+message StopBotReq {
+    string id = 1;
+}
+
+message StopBotsReq {
+    repeated string ids = 1;
+}
+
+message StopBotsResp {
+    repeated Bot bots = 1;
+    bool all_succeeded = 2;
+}
+
+message StartBotReq {
+    string id = 1;
+}
+
+message StartBotsReq {
+    repeated string ids = 1;
+}
+
+message StartBotsResp {
+    repeated Bot bots = 1;
+    bool all_succeeded = 2;
+}
+
+message RestartBotReq {
+    string id = 1;
+}
+
+message RestartBotsResp {
+    repeated Bot bots = 1;
+    bool all_succeeded = 2;
+}
+
+message DeleteBotReq {
+    string id = 1;
+}
+
+message DeleteBotsReq {
+    repeated string ids = 1;
+}
+
+message DeleteBotsResp {
+    bool all_succeeded = 1;
+}
+
+message DeleteAllBotsResp {
+    bool all_succeeded = 1;
+}
