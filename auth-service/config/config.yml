@@ -2,6 +2,9 @@ env: develop
 grpc:
   host: ${GRPC_HOST}
   port: ${GRPC_PORT}
+  orchestrator-service:
+    host: ${GRPC_ORCHESTRATOR_HOST}
+    port: ${GRPC_ORCHESTRATOR_PORT}
 db:
   host: ${DB_HOST}
   port: ${DB_PORT}

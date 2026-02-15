@@ -13,9 +13,15 @@ const (
 
 type Env string
 
-type GRPCConfig struct {
+type OrchestratorServiceConfig struct {
 	Host string `yaml:"host"`
 	Port string `yaml:"port"`
+}
+
+type GRPCConfig struct {
+	Host                string                    `yaml:"host"`
+	Port                string                    `yaml:"port"`
+	OrchestratorService OrchestratorServiceConfig `yaml:"orchestrator-service"`
 }
 
 type DBConfig struct {
