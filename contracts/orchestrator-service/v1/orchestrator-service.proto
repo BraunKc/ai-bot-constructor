@@ -21,13 +21,12 @@ service Orchestrator {
     // METADATA: jwt token of user
     rpc StartBots(StartBotsReq) returns (StartBotsResp);
     // METADATA: jwt token of user
-    rpc RestartBot(RestartBotReq) returns (RestartBotsResp);
+    rpc RestartBot(RestartBotReq) returns (RestartBotResp);
     // METADATA: jwt token of user
     rpc DeleteBot(DeleteBotReq) returns (google.protobuf.Empty);
     // METADATA: jwt token of user
     rpc DeleteBots(DeleteBotsReq) returns (DeleteBotsResp);
-    // METADATA: jwt token of user
-    rpc DeleteAllBots(google.protobuf.Empty) returns (DeleteAllBotsResp);
+    rpc DeleteAllBots(DeleteAllBotsReq) returns (DeleteAllBotsResp);
 }
 
 enum BotStatus {
@@ -93,7 +92,7 @@ message RestartBotReq {
     string id = 1;
 }
 
-message RestartBotsResp {
+message RestartBotResp {
     repeated Bot bots = 1;
     bool all_succeeded = 2;
 }
@@ -108,6 +107,10 @@ message DeleteBotsReq {
 
 message DeleteBotsResp {
     bool all_succeeded = 1;
+}
+
+message DeleteAllBotsReq {
+    string user_id = 1;
 }
 
 message DeleteAllBotsResp {

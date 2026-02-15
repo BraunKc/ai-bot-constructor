@@ -52,13 +52,12 @@ type OrchestratorClient interface {
 	// METADATA: jwt token of user
 	StartBots(ctx context.Context, in *StartBotsReq, opts ...grpc.CallOption) (*StartBotsResp, error)
 	// METADATA: jwt token of user
-	RestartBot(ctx context.Context, in *RestartBotReq, opts ...grpc.CallOption) (*RestartBotsResp, error)
+	RestartBot(ctx context.Context, in *RestartBotReq, opts ...grpc.CallOption) (*RestartBotResp, error)
 	// METADATA: jwt token of user
 	DeleteBot(ctx context.Context, in *DeleteBotReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// METADATA: jwt token of user
 	DeleteBots(ctx context.Context, in *DeleteBotsReq, opts ...grpc.CallOption) (*DeleteBotsResp, error)
-	// METADATA: jwt token of user
-	DeleteAllBots(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*DeleteAllBotsResp, error)
+	DeleteAllBots(ctx context.Context, in *DeleteAllBotsReq, opts ...grpc.CallOption) (*DeleteAllBotsResp, error)
 }
 
 type orchestratorClient struct {
@@ -139,9 +138,9 @@ func (c *orchestratorClient) StartBots(ctx context.Context, in *StartBotsReq, op
 	return out, nil
 }
 
-func (c *orchestratorClient) RestartBot(ctx context.Context, in *RestartBotReq, opts ...grpc.CallOption) (*RestartBotsResp, error) {
+func (c *orchestratorClient) RestartBot(ctx context.Context, in *RestartBotReq, opts ...grpc.CallOption) (*RestartBotResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RestartBotsResp)
+	out := new(RestartBotResp)
 	err := c.cc.Invoke(ctx, Orchestrator_RestartBot_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -169,7 +168,7 @@ func (c *orchestratorClient) DeleteBots(ctx context.Context, in *DeleteBotsReq, 
 	return out, nil
 }
 
-func (c *orchestratorClient) DeleteAllBots(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*DeleteAllBotsResp, error) {
+func (c *orchestratorClient) DeleteAllBots(ctx context.Context, in *DeleteAllBotsReq, opts ...grpc.CallOption) (*DeleteAllBotsResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteAllBotsResp)
 	err := c.cc.Invoke(ctx, Orchestrator_DeleteAllBots_FullMethodName, in, out, cOpts...)
@@ -198,13 +197,12 @@ type OrchestratorServer interface {
 	// METADATA: jwt token of user
 	StartBots(context.Context, *StartBotsReq) (*StartBotsResp, error)
 	// METADATA: jwt token of user
-	RestartBot(context.Context, *RestartBotReq) (*RestartBotsResp, error)
+	RestartBot(context.Context, *RestartBotReq) (*RestartBotResp, error)
 	// METADATA: jwt token of user
 	DeleteBot(context.Context, *DeleteBotReq) (*emptypb.Empty, error)
 	// METADATA: jwt token of user
 	DeleteBots(context.Context, *DeleteBotsReq) (*DeleteBotsResp, error)
-	// METADATA: jwt token of user
-	DeleteAllBots(context.Context, *emptypb.Empty) (*DeleteAllBotsResp, error)
+	DeleteAllBots(context.Context, *DeleteAllBotsReq) (*DeleteAllBotsResp, error)
 	mustEmbedUnimplementedOrchestratorServer()
 }
 
@@ -236,7 +234,7 @@ func (UnimplementedOrchestratorServer) StartBot(context.Context, *StartBotReq) (
 func (UnimplementedOrchestratorServer) StartBots(context.Context, *StartBotsReq) (*StartBotsResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method StartBots not implemented")
 }
-func (UnimplementedOrchestratorServer) RestartBot(context.Context, *RestartBotReq) (*RestartBotsResp, error) {
+func (UnimplementedOrchestratorServer) RestartBot(context.Context, *RestartBotReq) (*RestartBotResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method RestartBot not implemented")
 }
 func (UnimplementedOrchestratorServer) DeleteBot(context.Context, *DeleteBotReq) (*emptypb.Empty, error) {
@@ -245,7 +243,7 @@ func (UnimplementedOrchestratorServer) DeleteBot(context.Context, *DeleteBotReq)
 func (UnimplementedOrchestratorServer) DeleteBots(context.Context, *DeleteBotsReq) (*DeleteBotsResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteBots not implemented")
 }
-func (UnimplementedOrchestratorServer) DeleteAllBots(context.Context, *emptypb.Empty) (*DeleteAllBotsResp, error) {
+func (UnimplementedOrchestratorServer) DeleteAllBots(context.Context, *DeleteAllBotsReq) (*DeleteAllBotsResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteAllBots not implemented")
 }
 func (UnimplementedOrchestratorServer) mustEmbedUnimplementedOrchestratorServer() {}
@@ -450,7 +448,7 @@ func _Orchestrator_DeleteBots_Handler(srv interface{}, ctx context.Context, dec 
 }
 
 func _Orchestrator_DeleteAllBots_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(DeleteAllBotsReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -462,7 +460,7 @@ func _Orchestrator_DeleteAllBots_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: Orchestrator_DeleteAllBots_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrchestratorServer).DeleteAllBots(ctx, req.(*emptypb.Empty))
+		return srv.(OrchestratorServer).DeleteAllBots(ctx, req.(*DeleteAllBotsReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
