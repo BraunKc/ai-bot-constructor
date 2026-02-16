@@ -11,3 +11,7 @@ db:
   name: ${DB_NAME}
   user: ${DB_USER}
   password: ${DB_PASSWORD}
+logger:
+  service: auth-service
+  output-type: console
+  level: debug

@@ -12,4 +12,5 @@ type UserRepo interface {
 	Get(ctx context.Context, id uuid.UUID) (*User, error)
 	UpdateUsername(ctx context.Context, id uuid.UUID, newUsername Username) (*User, error)
 	Delete(ctx context.Context, id uuid.UUID) error
+	Close() error
 }

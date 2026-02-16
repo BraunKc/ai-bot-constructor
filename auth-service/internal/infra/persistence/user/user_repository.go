@@ -23,7 +23,6 @@ func NewRepo(db *gorm.DB, log *slog.Logger) userdomain.UserRepo {
 	}
 }
 
-// TODO: write user repo
 func (ur *userRepo) Create(ctx context.Context, user *userdomain.User) error {
 	ur.log.Debug("creating user",
 		slog.String("id", user.ID().String()),
@@ -71,7 +70,6 @@ func (ur *userRepo) Get(ctx context.Context, id uuid.UUID) (*userdomain.User, er
 	return user.ToDomain()
 }
 
-// TODO: check updating field "updated_at"
 func (ur *userRepo) UpdateUsername(ctx context.Context, id uuid.UUID, newUsername userdomain.Username) (*userdomain.User, error) {
 	ur.log.Debug("updating user username",
 		slog.String("id", id.String()),
@@ -117,4 +115,13 @@ func (ur *userRepo) Delete(ctx context.Context, id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+func (ur *userRepo) Close() error {
+	sqlDB, err := ur.db.DB()
+	if err != nil {
+		return err
+	}
+
+	return sqlDB.Close()
 }
