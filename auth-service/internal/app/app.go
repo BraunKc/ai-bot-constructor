@@ -204,6 +204,9 @@ func (app *App) Stop() {
 		if err := app.userRepo.Close(); err != nil {
 			app.log.Error("failed to close db gracefully")
 		}
+		if err := app.orchestratorClient.Close(); err != nil {
+			app.log.Error("failed to close orchestrator conn gracefully")
+		}
 	}()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

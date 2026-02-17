@@ -1,3 +1,6 @@
 [submodule "auth-service/pkg/log"]
 	path = auth-service/pkg/log
 	url = https://github.com/braunkc/log
+[submodule "auth-gateway/pkg/log"]
+	path = auth-gateway/pkg/log
+	url = https://github.com/braunkc/log

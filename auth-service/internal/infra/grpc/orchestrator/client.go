@@ -27,6 +27,7 @@ func NewClient(cfg *config.OrchestratorServiceConfig, log *slog.Logger) (useruse
 	client := orchestratorpb.NewOrchestratorClient(conn)
 
 	return &orchestratorClient{
+		conn:   conn,
 		client: client,
 		log:    log,
 	}, nil

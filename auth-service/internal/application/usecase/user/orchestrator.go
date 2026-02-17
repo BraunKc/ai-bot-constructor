@@ -8,4 +8,5 @@ import (
 
 type OrchestratorClient interface {
 	DeleteAllBots(ctx context.Context, userID uuid.UUID) error
+	Close() error
 }
