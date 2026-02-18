@@ -1,4 +1,4 @@
-package authgrpc
+package autherrors
 
 import (
 	"fmt"
@@ -22,7 +22,7 @@ func (ae *AppError) Error() string {
 	return ae.Message
 }
 
-func httpError(err error) error {
+func GRPCToHTTPError(err error) error {
 	if err == nil {
 		return nil
 	}

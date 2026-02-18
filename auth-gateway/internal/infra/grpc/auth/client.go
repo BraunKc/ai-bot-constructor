@@ -9,6 +9,7 @@ import (
 	"github.com/braunkc/ai-bot-constructor/auth-gateway/config"
 	userdto "github.com/braunkc/ai-bot-constructor/auth-gateway/internal/application/dto/user"
 	userusecase "github.com/braunkc/ai-bot-constructor/auth-gateway/internal/application/usecase/user"
+	autherrors "github.com/braunkc/ai-bot-constructor/auth-gateway/internal/infra/grpc/auth/errors"
 	authinterceptors "github.com/braunkc/ai-bot-constructor/auth-gateway/internal/infra/grpc/auth/interceptors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -28,7 +29,7 @@ func NewClient(cfg *config.AuthServiceConfig, log *slog.Logger) (userusecase.Aut
 		grpc.WithChainUnaryInterceptor(authinterceptors.UnaryAuthInterceptor()),
 	)
 	if err != nil {
-		return nil, httpError(err)
+		return nil, autherrors.GRPCToHTTPError(err)
 	}
 	client := authpb.NewAuthClient(conn)
 
@@ -51,7 +52,7 @@ func (ac *authClient) Register(ctx context.Context, req *userdto.AuthReq) (*user
 		Password: req.Password,
 	})
 	if err != nil {
-		return nil, httpError(err)
+		return nil, autherrors.GRPCToHTTPError(err)
 	}
 
 	return &userdto.Token{
@@ -67,7 +68,7 @@ func (ac *authClient) Login(ctx context.Context, req *userdto.AuthReq) (*userdto
 		Password: req.Password,
 	})
 	if err != nil {
-		return nil, httpError(err)
+		return nil, autherrors.GRPCToHTTPError(err)
 	}
 
 	return &userdto.Token{
@@ -80,7 +81,7 @@ func (ac *authClient) GetUser(ctx context.Context) (*userdto.User, error) {
 
 	resp, err := ac.client.GetUser(ctx, &emptypb.Empty{})
 	if err != nil {
-		return nil, httpError(err)
+		return nil, autherrors.GRPCToHTTPError(err)
 	}
 
 	return &userdto.User{
@@ -95,7 +96,7 @@ func (ac *authClient) UpdateUser(ctx context.Context, req *userdto.UpdateUserReq
 		NewUsername: req.NewUsername,
 	})
 	if err != nil {
-		return nil, httpError(err)
+		return nil, autherrors.GRPCToHTTPError(err)
 	}
 
 	return &userdto.User{
@@ -108,7 +109,7 @@ func (ac *authClient) DeleteUser(ctx context.Context) error {
 
 	_, err := ac.client.DeleteUser(ctx, &emptypb.Empty{})
 	if err != nil {
-		return httpError(err)
+		return autherrors.GRPCToHTTPError(err)
 	}
 
 	return nil
