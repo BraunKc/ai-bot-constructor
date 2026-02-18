@@ -1,0 +1,12 @@
+env: develop
+http:
+  host: ${HTTP_HOST}
+  port: ${HTTP_PORT}
+grpc:
+  auth-service:
+    host: ${GRPC_AUTH_HOST}
+    port: ${GRPC_AUTH_PORT}
+logger:
+  service: auth-gateway
+  output-type: console
+  level: debug
