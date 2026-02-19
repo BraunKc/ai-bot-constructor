@@ -8,6 +8,7 @@ import (
 
 	userdomain "github.com/braunkc/ai-bot-constructor/auth-service/internal/domain/user"
 	"github.com/google/uuid"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -30,7 +31,7 @@ func (ur *userRepo) Create(ctx context.Context, user *userdomain.User) error {
 	)
 
 	if err := ur.db.WithContext(ctx).Create(userDomainToDBModel(user)).Error; err != nil {
-		if errors.Is(err, gorm.ErrDuplicatedKey) {
+		if errors.Is(postgres.Dialector{}.Translate(err), gorm.ErrDuplicatedKey) {
 			return userdomain.ErrDuplicatedKey
 		}
 
@@ -45,7 +46,7 @@ func (ur *userRepo) GetByUsername(ctx context.Context, username userdomain.Usern
 
 	var user User
 	if err := ur.db.WithContext(ctx).Where("username = ?", username.String()).First(&user).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+		if errors.Is(postgres.Dialector{}.Translate(err), gorm.ErrRecordNotFound) {
 			return nil, userdomain.ErrRecordNotFound
 		}
 
@@ -60,7 +61,7 @@ func (ur *userRepo) Get(ctx context.Context, id uuid.UUID) (*userdomain.User, er
 
 	var user User
 	if err := ur.db.WithContext(ctx).Where("id = ?", id).First(&user).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+		if errors.Is(postgres.Dialector{}.Translate(err), gorm.ErrRecordNotFound) {
 			return nil, userdomain.ErrRecordNotFound
 		}
 
@@ -78,7 +79,7 @@ func (ur *userRepo) UpdateUsername(ctx context.Context, id uuid.UUID, newUsernam
 
 	var user User
 	if err := ur.db.WithContext(ctx).Where("id = ?", id).First(&user).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+		if errors.Is(postgres.Dialector{}.Translate(err), gorm.ErrRecordNotFound) {
 			return nil, userdomain.ErrRecordNotFound
 		}
 
@@ -92,7 +93,7 @@ func (ur *userRepo) UpdateUsername(ctx context.Context, id uuid.UUID, newUsernam
 	user.Username = newUsername.String()
 
 	if err := ur.db.WithContext(ctx).Model(&user).Update("username", newUsername.String()).Error; err != nil {
-		if errors.Is(err, gorm.ErrDuplicatedKey) {
+		if errors.Is(postgres.Dialector{}.Translate(err), gorm.ErrDuplicatedKey) {
 			return nil, userdomain.ErrDuplicatedKey
 		}
 
