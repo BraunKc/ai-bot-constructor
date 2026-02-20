@@ -148,6 +148,7 @@ func (app *App) initGRPCServer() {
 	authInterceptor := grpcinterceptors.NewAuthInterceptor(app.tokenManager, protectedMethods)
 
 	app.grpcServer = grpcserver.New(authInterceptor, app.userUsecase, app.log)
+	app.log.Info("grpc server created")
 }
 
 func New(envPath string) (*App, error) {
@@ -177,8 +178,7 @@ func New(envPath string) (*App, error) {
 func (app *App) Run() error {
 	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%s", app.cfg.GRPC.Host, app.cfg.GRPC.Port))
 	if err != nil {
-		app.log.Error("failed to create grpc listener", slog.Any("err", err))
-		os.Exit(1)
+		return fmt.Errorf("failed to create grpc listener: %w", err)
 	}
 
 	app.log.Info("grpc server serve",
