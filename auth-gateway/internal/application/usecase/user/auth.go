@@ -16,6 +16,7 @@ type AuthClient interface {
 	GetUser(ctx context.Context) (*userdto.User, error)
 	UpdateUser(ctx context.Context, req *userdto.UpdateUserReq) (*userdto.User, error)
 	DeleteUser(ctx context.Context) error
+	Close() error
 }
 
 type UserUsecase interface {

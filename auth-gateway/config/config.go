@@ -7,6 +7,20 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
+const (
+	Develop    Env = "develop"
+	Production Env = "production"
+
+	Console LoggerOutputType = "console"
+	File    LoggerOutputType = "file"
+	Both    LoggerOutputType = "both"
+
+	Debug LoggerLevel = "debug"
+	Info  LoggerLevel = "info"
+	Warn  LoggerLevel = "warn"
+	Error LoggerLevel = "error"
+)
+
 type Env string
 
 type LoggerOutputType string
@@ -35,6 +49,7 @@ type LoggerConfig struct {
 
 type Config struct {
 	Env    Env          `yaml:"env"`
+	HTTP   HTTPConfig   `yaml:"http"`
 	GRPC   GRPCConfig   `yaml:"grpc"`
 	Logger LoggerConfig `yaml:"logger"`
 }

@@ -16,9 +16,9 @@ func Init(r *gin.Engine, httpHandlers httphandlers.HTTPHandlers) {
 			user := v1.Group("/user")
 			user.Use(httpmiddlewares.AuthMiddleware())
 			{
-				user.GET("/", httpHandlers.GetUser())
-				user.PATCH("/", httpHandlers.UpdateUser())
-				user.DELETE("/", httpHandlers.DeleteUser())
+				user.GET("", httpHandlers.GetUser())
+				user.PATCH("", httpHandlers.UpdateUser())
+				user.DELETE("", httpHandlers.DeleteUser())
 			}
 		}
 	}
