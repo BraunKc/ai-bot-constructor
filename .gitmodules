@@ -4,3 +4,6 @@
 [submodule "auth-gateway/pkg/log"]
 	path = auth-gateway/pkg/log
 	url = https://github.com/braunkc/log
+[submodule "orchestrator-service/pkg/log"]
+	path = orchestrator-service/pkg/log
+	url = https://github.com/braunkc/log

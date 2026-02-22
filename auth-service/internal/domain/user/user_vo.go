@@ -6,8 +6,9 @@ import (
 )
 
 var (
-	ErrEmptyUsername        = errors.New("empty username")
-	ErrUsernameMustBeLonger = errors.New("username must be longer")
+	ErrEmptyUsername         = errors.New("empty username")
+	ErrUsernameMustBeLonger  = errors.New("username must be longer")
+	ErrUsernameMustBeShorter = errors.New("username must be shorter")
 
 	ErrEmptyPassword        = errors.New("empty password")
 	ErrPasswordMustBeLonger = errors.New("password must be longer")
@@ -21,26 +22,17 @@ type Hasher interface {
 type Username string
 
 func NewUsername(username string) (Username, error) {
-	u := Username(username)
-	if err := u.validate(); err != nil {
-		return "", err
+	trimmed := strings.TrimSpace(username)
+	lenTrimmed := len(trimmed)
+
+	if lenTrimmed < 3 {
+		return "", ErrUsernameMustBeLonger
+	}
+	if lenTrimmed > 32 {
+		return "", ErrUsernameMustBeShorter
 	}
 
-	return u, nil
-}
-
-func (u Username) validate() error {
-	trimmed := strings.TrimSpace(u.String())
-
-	if trimmed == "" {
-		return ErrEmptyUsername
-	}
-
-	if len(trimmed) < 3 {
-		return ErrUsernameMustBeLonger
-	}
-
-	return nil
+	return Username(username), nil
 }
 
 func (u Username) String() string {
