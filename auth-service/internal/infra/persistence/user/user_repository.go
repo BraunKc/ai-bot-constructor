@@ -53,7 +53,7 @@ func (ur *userRepo) GetByUsername(ctx context.Context, username userdomain.Usern
 		return nil, fmt.Errorf("failed to get user by username: %w", err)
 	}
 
-	return user.ToDomain()
+	return user.toDomain()
 }
 
 func (ur *userRepo) Get(ctx context.Context, id uuid.UUID) (*userdomain.User, error) {
@@ -68,7 +68,7 @@ func (ur *userRepo) Get(ctx context.Context, id uuid.UUID) (*userdomain.User, er
 		return nil, fmt.Errorf("failed to get user by id: %w", err)
 	}
 
-	return user.ToDomain()
+	return user.toDomain()
 }
 
 func (ur *userRepo) UpdateUsername(ctx context.Context, id uuid.UUID, newUsername userdomain.Username) (*userdomain.User, error) {
@@ -87,7 +87,7 @@ func (ur *userRepo) UpdateUsername(ctx context.Context, id uuid.UUID, newUsernam
 	}
 
 	if user.Username == newUsername.String() {
-		return user.ToDomain()
+		return user.toDomain()
 	}
 
 	user.Username = newUsername.String()
@@ -100,7 +100,7 @@ func (ur *userRepo) UpdateUsername(ctx context.Context, id uuid.UUID, newUsernam
 		return nil, fmt.Errorf("failed to update user: %w", err)
 	}
 
-	return user.ToDomain()
+	return user.toDomain()
 }
 
 func (ur *userRepo) Delete(ctx context.Context, id uuid.UUID) error {

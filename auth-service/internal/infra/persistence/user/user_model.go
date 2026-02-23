@@ -25,6 +25,6 @@ func userDomainToDBModel(user *userdomain.User) *User {
 	}
 }
 
-func (u *User) ToDomain() (*userdomain.User, error) {
+func (u *User) toDomain() (*userdomain.User, error) {
 	return userdomain.RestoreUser(u.ID, u.Username, u.PasswordHash)
 }
