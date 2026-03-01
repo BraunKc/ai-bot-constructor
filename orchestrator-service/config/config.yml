@@ -10,7 +10,7 @@ db:
   password: ${DB_PASSWORD}
 kafka:
   host: ${KAFKA_HOST}
-  port: ${KAFKA_PORT
+  port: ${KAFKA_PORT}
 logger:
   service: orchestrator-service
   output-type: console
