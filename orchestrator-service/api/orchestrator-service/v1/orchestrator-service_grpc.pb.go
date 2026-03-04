@@ -58,7 +58,7 @@ type OrchestratorClient interface {
 	// METADATA: jwt token of user
 	DeleteBots(ctx context.Context, in *DeleteBotsReq, opts ...grpc.CallOption) (*DeleteBotsResp, error)
 	// METADATA: jwt token of user
-	DeleteAllBots(ctx context.Context, in *DeleteAllBotsReq, opts ...grpc.CallOption) (*DeleteAllBotsResp, error)
+	DeleteAllBots(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*DeleteAllBotsResp, error)
 }
 
 type orchestratorClient struct {
@@ -169,7 +169,7 @@ func (c *orchestratorClient) DeleteBots(ctx context.Context, in *DeleteBotsReq, 
 	return out, nil
 }
 
-func (c *orchestratorClient) DeleteAllBots(ctx context.Context, in *DeleteAllBotsReq, opts ...grpc.CallOption) (*DeleteAllBotsResp, error) {
+func (c *orchestratorClient) DeleteAllBots(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*DeleteAllBotsResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteAllBotsResp)
 	err := c.cc.Invoke(ctx, Orchestrator_DeleteAllBots_FullMethodName, in, out, cOpts...)
@@ -204,7 +204,7 @@ type OrchestratorServer interface {
 	// METADATA: jwt token of user
 	DeleteBots(context.Context, *DeleteBotsReq) (*DeleteBotsResp, error)
 	// METADATA: jwt token of user
-	DeleteAllBots(context.Context, *DeleteAllBotsReq) (*DeleteAllBotsResp, error)
+	DeleteAllBots(context.Context, *emptypb.Empty) (*DeleteAllBotsResp, error)
 	mustEmbedUnimplementedOrchestratorServer()
 }
 
@@ -245,7 +245,7 @@ func (UnimplementedOrchestratorServer) DeleteBot(context.Context, *DeleteBotReq)
 func (UnimplementedOrchestratorServer) DeleteBots(context.Context, *DeleteBotsReq) (*DeleteBotsResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteBots not implemented")
 }
-func (UnimplementedOrchestratorServer) DeleteAllBots(context.Context, *DeleteAllBotsReq) (*DeleteAllBotsResp, error) {
+func (UnimplementedOrchestratorServer) DeleteAllBots(context.Context, *emptypb.Empty) (*DeleteAllBotsResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteAllBots not implemented")
 }
 func (UnimplementedOrchestratorServer) mustEmbedUnimplementedOrchestratorServer() {}
@@ -450,7 +450,7 @@ func _Orchestrator_DeleteBots_Handler(srv interface{}, ctx context.Context, dec 
 }
 
 func _Orchestrator_DeleteAllBots_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteAllBotsReq)
+	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -462,7 +462,7 @@ func _Orchestrator_DeleteAllBots_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: Orchestrator_DeleteAllBots_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrchestratorServer).DeleteAllBots(ctx, req.(*DeleteAllBotsReq))
+		return srv.(OrchestratorServer).DeleteAllBots(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }

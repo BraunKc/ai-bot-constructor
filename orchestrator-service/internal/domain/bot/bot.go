@@ -23,6 +23,7 @@ var (
 	ErrDuplicatedKey      = errors.New("api key already exists")
 	ErrRecordNotFound     = errors.New("bot not found")
 	ErrInvalidStorageData = errors.New("invalid storage data")
+	ErrNotEnoughRights    = errors.New("not enough rights")
 )
 
 func NewBot(userID uuid.UUID, name string, apiKey string) (*Bot, error) {

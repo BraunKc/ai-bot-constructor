@@ -27,7 +27,7 @@ service Orchestrator {
     // METADATA: jwt token of user
     rpc DeleteBots(DeleteBotsReq) returns (DeleteBotsResp);
     // METADATA: jwt token of user
-    rpc DeleteAllBots(DeleteAllBotsReq) returns (DeleteAllBotsResp);
+    rpc DeleteAllBots(google.protobuf.Empty) returns (DeleteAllBotsResp);
 }
 
 enum BotStatus {
@@ -106,10 +106,6 @@ message DeleteBotsReq {
 
 message DeleteBotsResp {
     bool all_succeeded = 1;
-}
-
-message DeleteAllBotsReq {
-    string user_id = 1;
 }
 
 message DeleteAllBotsResp {

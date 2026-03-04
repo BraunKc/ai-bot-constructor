@@ -26,9 +26,8 @@ func New(cfg *config.KafkaConfig, log *slog.Logger) KafkaProducer {
 		Brokers:  []string{fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)},
 		Topic:    "bots",
 		Balancer: &kafka.Hash{},
-		Logger:   kafka.LoggerFunc(log.Debug),
 		ErrorLogger: kafka.LoggerFunc(func(msg string, args ...interface{}) {
-			log.Error("kafka writer error", append([]interface{}{"msg", msg}, args...)...)
+			log.Error("kafka writer error", "msg", msg, "details", args)
 		}),
 	})
 

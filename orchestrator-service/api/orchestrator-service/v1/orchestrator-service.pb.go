@@ -779,50 +779,6 @@ func (x *DeleteBotsResp) GetAllSucceeded() bool {
 	return false
 }
 
-type DeleteAllBotsReq struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *DeleteAllBotsReq) Reset() {
-	*x = DeleteAllBotsReq{}
-	mi := &file_orchestrator_service_v1_orchestrator_service_proto_msgTypes[14]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *DeleteAllBotsReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeleteAllBotsReq) ProtoMessage() {}
-
-func (x *DeleteAllBotsReq) ProtoReflect() protoreflect.Message {
-	mi := &file_orchestrator_service_v1_orchestrator_service_proto_msgTypes[14]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DeleteAllBotsReq.ProtoReflect.Descriptor instead.
-func (*DeleteAllBotsReq) Descriptor() ([]byte, []int) {
-	return file_orchestrator_service_v1_orchestrator_service_proto_rawDescGZIP(), []int{14}
-}
-
-func (x *DeleteAllBotsReq) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
 type DeleteAllBotsResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	AllSucceeded  bool                   `protobuf:"varint,1,opt,name=all_succeeded,json=allSucceeded,proto3" json:"all_succeeded,omitempty"`
@@ -832,7 +788,7 @@ type DeleteAllBotsResp struct {
 
 func (x *DeleteAllBotsResp) Reset() {
 	*x = DeleteAllBotsResp{}
-	mi := &file_orchestrator_service_v1_orchestrator_service_proto_msgTypes[15]
+	mi := &file_orchestrator_service_v1_orchestrator_service_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -844,7 +800,7 @@ func (x *DeleteAllBotsResp) String() string {
 func (*DeleteAllBotsResp) ProtoMessage() {}
 
 func (x *DeleteAllBotsResp) ProtoReflect() protoreflect.Message {
-	mi := &file_orchestrator_service_v1_orchestrator_service_proto_msgTypes[15]
+	mi := &file_orchestrator_service_v1_orchestrator_service_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -857,7 +813,7 @@ func (x *DeleteAllBotsResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteAllBotsResp.ProtoReflect.Descriptor instead.
 func (*DeleteAllBotsResp) Descriptor() ([]byte, []int) {
-	return file_orchestrator_service_v1_orchestrator_service_proto_rawDescGZIP(), []int{15}
+	return file_orchestrator_service_v1_orchestrator_service_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *DeleteAllBotsResp) GetAllSucceeded() bool {
@@ -912,9 +868,7 @@ const file_orchestrator_service_v1_orchestrator_service_proto_rawDesc = "" +
 	"\rDeleteBotsReq\x12\x10\n" +
 	"\x03ids\x18\x01 \x03(\tR\x03ids\"5\n" +
 	"\x0eDeleteBotsResp\x12#\n" +
-	"\rall_succeeded\x18\x01 \x01(\bR\fallSucceeded\"+\n" +
-	"\x10DeleteAllBotsReq\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\"8\n" +
+	"\rall_succeeded\x18\x01 \x01(\bR\fallSucceeded\"8\n" +
 	"\x11DeleteAllBotsResp\x12#\n" +
 	"\rall_succeeded\x18\x01 \x01(\bR\fallSucceeded*\xe8\x01\n" +
 	"\tBotStatus\x12\x16\n" +
@@ -926,7 +880,7 @@ const file_orchestrator_service_v1_orchestrator_service_proto_rawDesc = "" +
 	"\x12BOT_STATUS_STOPPED\x10\x05\x12\x19\n" +
 	"\x15BOT_STATUS_RESTARTING\x10\x06\x12\x17\n" +
 	"\x13BOT_STATUS_DELETING\x10\a\x12\x14\n" +
-	"\x10BOT_STATUS_ERROR\x10\b2\x81\x06\n" +
+	"\x10BOT_STATUS_ERROR\x10\b2\xf7\x05\n" +
 	"\fOrchestrator\x12>\n" +
 	"\tCreateBot\x12\x1c.orchestratorv1.CreateBotReq\x1a\x13.orchestratorv1.Bot\x128\n" +
 	"\x06GetBot\x12\x19.orchestratorv1.GetBotReq\x1a\x13.orchestratorv1.Bot\x12D\n" +
@@ -940,8 +894,8 @@ const file_orchestrator_service_v1_orchestrator_service_proto_rawDesc = "" +
 	"RestartBot\x12\x1d.orchestratorv1.RestartBotReq\x1a\x13.orchestratorv1.Bot\x12A\n" +
 	"\tDeleteBot\x12\x1c.orchestratorv1.DeleteBotReq\x1a\x16.google.protobuf.Empty\x12K\n" +
 	"\n" +
-	"DeleteBots\x12\x1d.orchestratorv1.DeleteBotsReq\x1a\x1e.orchestratorv1.DeleteBotsResp\x12T\n" +
-	"\rDeleteAllBots\x12 .orchestratorv1.DeleteAllBotsReq\x1a!.orchestratorv1.DeleteAllBotsRespBKZIgithub.com/braunkc/ai-bot-constructor/orchestrator-service;orchestratorpbb\x06proto3"
+	"DeleteBots\x12\x1d.orchestratorv1.DeleteBotsReq\x1a\x1e.orchestratorv1.DeleteBotsResp\x12J\n" +
+	"\rDeleteAllBots\x12\x16.google.protobuf.Empty\x1a!.orchestratorv1.DeleteAllBotsRespBKZIgithub.com/braunkc/ai-bot-constructor/orchestrator-service;orchestratorpbb\x06proto3"
 
 var (
 	file_orchestrator_service_v1_orchestrator_service_proto_rawDescOnce sync.Once
@@ -956,7 +910,7 @@ func file_orchestrator_service_v1_orchestrator_service_proto_rawDescGZIP() []byt
 }
 
 var file_orchestrator_service_v1_orchestrator_service_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_orchestrator_service_v1_orchestrator_service_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_orchestrator_service_v1_orchestrator_service_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_orchestrator_service_v1_orchestrator_service_proto_goTypes = []any{
 	(BotStatus)(0),                // 0: orchestratorv1.BotStatus
 	(*Bot)(nil),                   // 1: orchestratorv1.Bot
@@ -973,21 +927,20 @@ var file_orchestrator_service_v1_orchestrator_service_proto_goTypes = []any{
 	(*DeleteBotReq)(nil),          // 12: orchestratorv1.DeleteBotReq
 	(*DeleteBotsReq)(nil),         // 13: orchestratorv1.DeleteBotsReq
 	(*DeleteBotsResp)(nil),        // 14: orchestratorv1.DeleteBotsResp
-	(*DeleteAllBotsReq)(nil),      // 15: orchestratorv1.DeleteAllBotsReq
-	(*DeleteAllBotsResp)(nil),     // 16: orchestratorv1.DeleteAllBotsResp
-	(*timestamppb.Timestamp)(nil), // 17: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),         // 18: google.protobuf.Empty
+	(*DeleteAllBotsResp)(nil),     // 15: orchestratorv1.DeleteAllBotsResp
+	(*timestamppb.Timestamp)(nil), // 16: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),         // 17: google.protobuf.Empty
 }
 var file_orchestrator_service_v1_orchestrator_service_proto_depIdxs = []int32{
 	0,  // 0: orchestratorv1.Bot.status:type_name -> orchestratorv1.BotStatus
-	17, // 1: orchestratorv1.Bot.created_at:type_name -> google.protobuf.Timestamp
-	17, // 2: orchestratorv1.Bot.updated_at:type_name -> google.protobuf.Timestamp
+	16, // 1: orchestratorv1.Bot.created_at:type_name -> google.protobuf.Timestamp
+	16, // 2: orchestratorv1.Bot.updated_at:type_name -> google.protobuf.Timestamp
 	1,  // 3: orchestratorv1.GetAllBotsResp.bots:type_name -> orchestratorv1.Bot
 	1,  // 4: orchestratorv1.StopBotsResp.bots:type_name -> orchestratorv1.Bot
 	1,  // 5: orchestratorv1.StartBotsResp.bots:type_name -> orchestratorv1.Bot
 	2,  // 6: orchestratorv1.Orchestrator.CreateBot:input_type -> orchestratorv1.CreateBotReq
 	3,  // 7: orchestratorv1.Orchestrator.GetBot:input_type -> orchestratorv1.GetBotReq
-	18, // 8: orchestratorv1.Orchestrator.GetAllBots:input_type -> google.protobuf.Empty
+	17, // 8: orchestratorv1.Orchestrator.GetAllBots:input_type -> google.protobuf.Empty
 	5,  // 9: orchestratorv1.Orchestrator.StopBot:input_type -> orchestratorv1.StopBotReq
 	6,  // 10: orchestratorv1.Orchestrator.StopBots:input_type -> orchestratorv1.StopBotsReq
 	8,  // 11: orchestratorv1.Orchestrator.StartBot:input_type -> orchestratorv1.StartBotReq
@@ -995,7 +948,7 @@ var file_orchestrator_service_v1_orchestrator_service_proto_depIdxs = []int32{
 	11, // 13: orchestratorv1.Orchestrator.RestartBot:input_type -> orchestratorv1.RestartBotReq
 	12, // 14: orchestratorv1.Orchestrator.DeleteBot:input_type -> orchestratorv1.DeleteBotReq
 	13, // 15: orchestratorv1.Orchestrator.DeleteBots:input_type -> orchestratorv1.DeleteBotsReq
-	15, // 16: orchestratorv1.Orchestrator.DeleteAllBots:input_type -> orchestratorv1.DeleteAllBotsReq
+	17, // 16: orchestratorv1.Orchestrator.DeleteAllBots:input_type -> google.protobuf.Empty
 	1,  // 17: orchestratorv1.Orchestrator.CreateBot:output_type -> orchestratorv1.Bot
 	1,  // 18: orchestratorv1.Orchestrator.GetBot:output_type -> orchestratorv1.Bot
 	4,  // 19: orchestratorv1.Orchestrator.GetAllBots:output_type -> orchestratorv1.GetAllBotsResp
@@ -1004,9 +957,9 @@ var file_orchestrator_service_v1_orchestrator_service_proto_depIdxs = []int32{
 	1,  // 22: orchestratorv1.Orchestrator.StartBot:output_type -> orchestratorv1.Bot
 	10, // 23: orchestratorv1.Orchestrator.StartBots:output_type -> orchestratorv1.StartBotsResp
 	1,  // 24: orchestratorv1.Orchestrator.RestartBot:output_type -> orchestratorv1.Bot
-	18, // 25: orchestratorv1.Orchestrator.DeleteBot:output_type -> google.protobuf.Empty
+	17, // 25: orchestratorv1.Orchestrator.DeleteBot:output_type -> google.protobuf.Empty
 	14, // 26: orchestratorv1.Orchestrator.DeleteBots:output_type -> orchestratorv1.DeleteBotsResp
-	16, // 27: orchestratorv1.Orchestrator.DeleteAllBots:output_type -> orchestratorv1.DeleteAllBotsResp
+	15, // 27: orchestratorv1.Orchestrator.DeleteAllBots:output_type -> orchestratorv1.DeleteAllBotsResp
 	17, // [17:28] is the sub-list for method output_type
 	6,  // [6:17] is the sub-list for method input_type
 	6,  // [6:6] is the sub-list for extension type_name
@@ -1025,7 +978,7 @@ func file_orchestrator_service_v1_orchestrator_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_orchestrator_service_v1_orchestrator_service_proto_rawDesc), len(file_orchestrator_service_v1_orchestrator_service_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   16,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
