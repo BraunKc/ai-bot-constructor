@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"time"
 
 	"github.com/braunkc/ai-bot-constructor/orchestrator-service/config"
 	"github.com/braunkc/ai-bot-constructor/orchestrator-service/pkg/botcommands"
@@ -23,9 +24,11 @@ type kafkaProducer struct {
 
 func New(cfg *config.KafkaConfig, log *slog.Logger) KafkaProducer {
 	writer := kafka.NewWriter(kafka.WriterConfig{
-		Brokers:  []string{fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)},
-		Topic:    "bots",
-		Balancer: &kafka.Hash{},
+		Brokers:      []string{fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)},
+		Topic:        "bots",
+		Balancer:     &kafka.Hash{},
+		BatchSize:    1,
+		BatchTimeout: 10 * time.Millisecond,
 		ErrorLogger: kafka.LoggerFunc(func(msg string, args ...interface{}) {
 			log.Error("kafka writer error", "msg", msg, "details", args)
 		}),

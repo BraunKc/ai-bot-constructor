@@ -2,11 +2,13 @@ package botusecase
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"log/slog"
 
 	botdto "github.com/braunkc/ai-bot-constructor/orchestrator-service/internal/application/dto/bot"
 	botdomain "github.com/braunkc/ai-bot-constructor/orchestrator-service/internal/domain/bot"
-	kafkaproducer "github.com/braunkc/ai-bot-constructor/orchestrator-service/internal/repo/kafka/bot/producer"
+	kafkaproducer "github.com/braunkc/ai-bot-constructor/orchestrator-service/internal/infra/repo/kafka/bot/producer"
 	"github.com/braunkc/ai-bot-constructor/orchestrator-service/pkg/botcommands"
 	"github.com/google/uuid"
 )
@@ -18,6 +20,7 @@ type BotUsecase interface {
 	StopBot(ctx context.Context, userID uuid.UUID, req *botdto.StopBotReq) (*botdto.Bot, error)
 	StopBots(ctx context.Context, userID uuid.UUID, req *botdto.StopBotsReq) (*botdto.StopBotsResp, error)
 	StartBot(ctx context.Context, userID uuid.UUID, req *botdto.StartBotReq) (*botdto.Bot, error)
+	StartBots(ctx context.Context, userID uuid.UUID, req *botdto.StartBotsReq) (*botdto.StartBotsResp, error)
 	RestartBot(ctx context.Context, userID uuid.UUID, req *botdto.RestartBotReq) (*botdto.Bot, error)
 	DeleteBot(ctx context.Context, userID uuid.UUID, req *botdto.DeleteBotReq) error
 	DeleteBots(ctx context.Context, userID uuid.UUID, req *botdto.DeleteBotsReq) (*botdto.DeleteBotsResp, error)
@@ -53,7 +56,7 @@ func (bu *botUsecase) CreateBot(ctx context.Context, userID uuid.UUID, req *botd
 		return nil, err
 	}
 
-	cmd, err := botcommands.NewCommand(bot.UserID(), userID, botcommands.CommandCreate, botcommands.CreatePayload{Name: bot.Name().String(), ApiKey: bot.ApiKey().Raw()})
+	cmd, err := botcommands.NewCommand(bot.ID(), userID, botcommands.CommandCreate, botcommands.CreatePayload{Name: bot.Name().String(), ApiKey: bot.ApiKey().Raw()})
 	if err != nil {
 		return nil, err
 	}
@@ -133,17 +136,16 @@ func (bu *botUsecase) StopBot(ctx context.Context, userID uuid.UUID, req *botdto
 func (bu *botUsecase) StopBots(ctx context.Context, userID uuid.UUID, req *botdto.StopBotsReq) (*botdto.StopBotsResp, error) {
 	bu.log.Debug("stopping bots by id",
 		slog.String("user_id", userID.String()),
-		slog.Any("bot_ids", req.IDs),
+		slog.Any("bots_ids", req.IDs),
 	)
 
 	bots := make([]botdto.Bot, 0, len(req.IDs))
 	for _, id := range req.IDs {
 		bot, err := bu.botRepo.GetByID(ctx, id)
 		if err != nil {
-			bu.log.Warn("failed to get bot by id",
-				slog.String("bot_id", id.String()),
-				slog.Any("err", err),
-			)
+			if !errors.Is(err, botdomain.ErrRecordNotFound) {
+				bu.log.Error("failed to get bot", slog.Any("err", err))
+			}
 
 			continue
 		}
@@ -218,6 +220,57 @@ func (bu *botUsecase) StartBot(ctx context.Context, userID uuid.UUID, req *botdt
 	return bu.DomainToDTOModel(bot), bu.kafkaProducer.Produce(ctx, cmd)
 }
 
+func (bu *botUsecase) StartBots(ctx context.Context, userID uuid.UUID, req *botdto.StartBotsReq) (*botdto.StartBotsResp, error) {
+	bu.log.Debug("starting bots",
+		slog.String("user_id", userID.String()),
+		slog.Any("bots_ids", req.IDs),
+	)
+
+	bots := make([]botdto.Bot, 0, len(req.IDs))
+	for _, id := range req.IDs {
+		bot, err := bu.botRepo.GetByID(ctx, id)
+		if err != nil {
+			if !errors.Is(err, botdomain.ErrRecordNotFound) {
+				bu.log.Error("failed to get bot", slog.Any("err", err))
+			}
+
+			continue
+		}
+
+		if bot.UserID() != userID {
+			continue
+		}
+
+		if err := bot.ChangeStatus(botdomain.BotStatusStarting.Int32()); err != nil {
+			bu.log.Error("failed to change bot status at domain", slog.Any("err", err))
+			continue
+		}
+
+		if err := bu.botRepo.UpdateStatus(ctx, bot.ID(), bot.Status()); err != nil {
+			bu.log.Error("failed to change bot status at db", slog.Any("err", err))
+			continue
+		}
+
+		cmd, err := botcommands.NewCommand(bot.ID(), bot.UserID(), botcommands.CommandStart, nil)
+		if err != nil {
+			bu.log.Error("failed to create start command", slog.Any("err", err))
+			continue
+		}
+
+		if err := bu.kafkaProducer.Produce(ctx, cmd); err != nil {
+			bu.log.Error("failed to produce start command", slog.Any("err", err))
+			continue
+		}
+
+		bots = append(bots, *bu.DomainToDTOModel(bot))
+	}
+
+	return &botdto.StartBotsResp{
+		Bots:         bots,
+		AllSucceeded: len(req.IDs) == len(bots),
+	}, nil
+}
+
 func (bu *botUsecase) RestartBot(ctx context.Context, userID uuid.UUID, req *botdto.RestartBotReq) (*botdto.Bot, error) {
 	bu.log.Debug("restarting bot",
 		slog.String("user_id", userID.String()),
@@ -260,13 +313,18 @@ func (bu *botUsecase) DeleteBot(ctx context.Context, userID uuid.UUID, req *botd
 func (bu *botUsecase) DeleteBots(ctx context.Context, userID uuid.UUID, req *botdto.DeleteBotsReq) (*botdto.DeleteBotsResp, error) {
 	bu.log.Debug("deleting bots",
 		slog.String("user_id", userID.String()),
-		slog.Any("bot_ids", req.IDs),
+		slog.Any("bots_ids", req.IDs),
 	)
 
 	successfulIDs := make([]uuid.UUID, 0, len(req.IDs))
 	for _, id := range req.IDs {
 		bot, err := bu.deleteBotFullCycle(ctx, userID, id)
 		if err != nil {
+			if !errors.Is(err, botdomain.ErrRecordNotFound) &&
+				!errors.Is(err, botdomain.ErrNotEnoughRights) {
+				bu.log.Error("failed to get bot", slog.Any("err", err))
+			}
+
 			continue
 		}
 
@@ -290,7 +348,10 @@ func (bu *botUsecase) DeleteAllBots(ctx context.Context, userID uuid.UUID) (*bot
 	for _, bot := range bots {
 		bot, err := bu.deleteBotFullCycle(ctx, userID, bot.ID())
 		if err != nil {
-			continue
+			if !errors.Is(err, botdomain.ErrRecordNotFound) &&
+				!errors.Is(err, botdomain.ErrNotEnoughRights) {
+				bu.log.Error("failed to get bot", slog.Any("err", err))
+			}
 		}
 
 		successfulIDs = append(successfulIDs, bot.ID())
@@ -309,6 +370,10 @@ func (bu *botUsecase) deleteBotFullCycle(ctx context.Context, userID, botID uuid
 
 	bot, err := bu.botRepo.GetByID(ctx, botID)
 	if err != nil {
+		if !errors.Is(err, botdomain.ErrRecordNotFound) {
+			return nil, fmt.Errorf("failed to get bot: %w", err)
+		}
+
 		return nil, err
 	}
 
