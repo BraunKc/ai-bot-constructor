@@ -21,7 +21,7 @@ This is a microservice system that allows users to quickly create and run their 
 ## Roadmap
 - [x] Auth service
 - [x] Auth gateway
-- [ ] Orchestrator service
+- [x] Orchestrator service
 - [ ] Orchestrator gateway
 - [ ] Bot container
 - [ ] Executor service
