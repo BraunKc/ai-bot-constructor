@@ -7,3 +7,6 @@
 [submodule "orchestrator-service/pkg/log"]
 	path = orchestrator-service/pkg/log
 	url = https://github.com/braunkc/log
+[submodule "orchestrator-gateway/pkg/log"]
+	path = orchestrator-gateway/pkg/log
+	url = https://github.com/braunkc/log

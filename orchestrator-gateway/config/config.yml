@@ -1,0 +1,12 @@
+env: develop
+http:
+  host: ${HTTP_HOST}
+  port: ${HTTP_PORT}
+grpc:
+  orchestrator-service:
+    host: ${GRPC_ORCHESTRATOR_HOST}
+    port: ${GRPC_ORCHESTRATOR_PORT}
+logger:
+  service: orchestrator-gateway
+  output-type: console
+  level: debug
