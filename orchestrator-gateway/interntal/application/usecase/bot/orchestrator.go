@@ -20,6 +20,7 @@ type OrchestratorClient interface {
 	DeleteBot(ctx context.Context, id string) error
 	DeleteBots(ctx context.Context, ids []string) (bool, error)
 	DeleteAllBots(ctx context.Context) (bool, error)
+	Close() error
 }
 
 type BotUsecase interface {
