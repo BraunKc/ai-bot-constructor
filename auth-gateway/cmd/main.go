@@ -13,6 +13,7 @@ func main() {
 	app, err := app.New(".env")
 	if err != nil {
 		slog.Error("failed to init app")
+		os.Exit(1)
 	}
 
 	go func() {

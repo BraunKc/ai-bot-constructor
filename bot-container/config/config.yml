@@ -1,0 +1,11 @@
+env: develop
+tg:
+  token: ${TELEGRAM_BOT_TOKEN}
+open-router:
+  token: ${OPEN_ROUTER_TOKEN}
+  model: arcee-ai/trinity-large-preview:free
+logger:
+  service: auth-gateway
+  output-type: console
+  level: debug
+system-prompt: ${SYSTEM_PROMPT}

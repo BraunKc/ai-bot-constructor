@@ -10,3 +10,6 @@
 [submodule "orchestrator-gateway/pkg/log"]
 	path = orchestrator-gateway/pkg/log
 	url = https://github.com/braunkc/log
+[submodule "bot-container/pkg/log"]
+	path = bot-container/pkg/log
+	url = https://github.com/braunkc/log

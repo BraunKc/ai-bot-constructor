@@ -22,6 +22,6 @@ This is a microservice system that allows users to quickly create and run their 
 - [x] Auth service
 - [x] Auth gateway
 - [x] Orchestrator service
-- [ ] Orchestrator gateway
-- [ ] Bot container
+- [x] Orchestrator gateway
+- [x] Bot container
 - [ ] Executor service
