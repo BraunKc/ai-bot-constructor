@@ -9,7 +9,7 @@ import (
 )
 
 type OrchestratorClient interface {
-	CreateBot(ctx context.Context, name, apiKey string) (*orchestratorpb.Bot, error)
+	CreateBot(ctx context.Context, name, systemPrompt, apiKey string) (*orchestratorpb.Bot, error)
 	GetBot(ctx context.Context, id string) (*orchestratorpb.Bot, error)
 	GetAllBots(ctx context.Context) ([]*orchestratorpb.Bot, error)
 	StartBot(ctx context.Context, id string) (*orchestratorpb.Bot, error)
@@ -52,7 +52,7 @@ func NewBotUsecase(orchestratorClient OrchestratorClient, log *slog.Logger) BotU
 func (bu *botUsecase) CreateBot(ctx context.Context, req *botdto.CreateBotRequest) (*botdto.Bot, error) {
 	bu.log.Debug("initiated creating bot", slog.String("name", req.Name))
 
-	pbBot, err := bu.client.CreateBot(ctx, req.Name, req.APIKey)
+	pbBot, err := bu.client.CreateBot(ctx, req.Name, req.SystemPrompt, req.APIKey)
 	if err != nil {
 		return nil, err
 	}

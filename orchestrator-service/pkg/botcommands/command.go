@@ -28,8 +28,9 @@ type Command struct {
 }
 
 type CreatePayload struct {
-	Name   string `json:"name"`
-	ApiKey string `json:"api_key"` // SECURITY: must encrypt in prod
+	Name         string `json:"name"`
+	SystemPrompt string `json:"system_prompt"`
+	ApiKey       string `json:"api_key"` // SECURITY: must encrypt in prod
 }
 
 func NewCommand(botID, userID uuid.UUID, cmdType CommandType, payload any) (*Command, error) {

@@ -46,13 +46,14 @@ func ToBotStatus(status orchestratorpb.BotStatus) BotStatus {
 }
 
 type Bot struct {
-	ID        string    `json:"id"`
-	UserID    string    `json:"user_id"`
-	Name      string    `json:"name"`
-	Status    BotStatus `json:"status"`
-	LastError string    `json:"last_error"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID           string    `json:"id"`
+	UserID       string    `json:"user_id"`
+	Name         string    `json:"name"`
+	SystemPrompt string    `json:"system_prompt"`
+	Status       BotStatus `json:"status"`
+	LastError    string    `json:"last_error"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
 }
 
 func FromProto(pb *orchestratorpb.Bot) *Bot {
@@ -61,11 +62,12 @@ func FromProto(pb *orchestratorpb.Bot) *Bot {
 	}
 
 	dto := &Bot{
-		ID:        pb.Id,
-		UserID:    pb.UserId,
-		Name:      pb.Name,
-		Status:    ToBotStatus(pb.Status),
-		LastError: pb.LastError,
+		ID:           pb.Id,
+		UserID:       pb.UserId,
+		Name:         pb.Name,
+		SystemPrompt: pb.SystemPrompt,
+		Status:       ToBotStatus(pb.Status),
+		LastError:    pb.LastError,
 	}
 
 	if pb.CreatedAt != nil {
@@ -93,8 +95,9 @@ func FromProtoList(pbs []*orchestratorpb.Bot) []*Bot {
 }
 
 type CreateBotRequest struct {
-	Name   string `json:"name"`
-	APIKey string `json:"api_key"`
+	Name         string `json:"name"`
+	SystemPrompt string `json:"system_prompt"`
+	APIKey       string `json:"api_key"`
 }
 
 type GetBotRequest struct {

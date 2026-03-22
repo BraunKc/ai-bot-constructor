@@ -13,3 +13,6 @@
 [submodule "bot-container/pkg/log"]
 	path = bot-container/pkg/log
 	url = https://github.com/braunkc/log
+[submodule "executor-service/pkg/log"]
+	path = executor-service/pkg/log
+	url = https://github.com/braunkc/log

@@ -37,12 +37,13 @@ func NewClient(cfg *config.OrchestratorServiceConfig, log *slog.Logger) (botusec
 	}, nil
 }
 
-func (oc *orchestratorClient) CreateBot(ctx context.Context, name, apiKey string) (*orchestratorpb.Bot, error) {
+func (oc *orchestratorClient) CreateBot(ctx context.Context, name, systemPrompt, apiKey string) (*orchestratorpb.Bot, error) {
 	oc.log.Debug("requesting for create bot", slog.String("name", name))
 
 	resp, err := oc.client.CreateBot(ctx, &orchestratorpb.CreateBotReq{
-		Name:   name,
-		ApiKey: apiKey,
+		Name:         name,
+		SystemPrompt: systemPrompt,
+		ApiKey:       apiKey,
 	})
 	if err != nil {
 		return nil, orchestratorerrors.GRPCToHTTPError(err)

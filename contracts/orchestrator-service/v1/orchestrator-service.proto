@@ -47,15 +47,17 @@ message Bot {
     string user_id = 2;
     BotStatus status = 3;
     string name = 4;
+    string system_prompt = 5;
     // filled when status = error
-    string last_error = 5;
-    google.protobuf.Timestamp created_at = 6;
-    google.protobuf.Timestamp updated_at = 7;
+    string last_error = 6;
+    google.protobuf.Timestamp created_at = 7;
+    google.protobuf.Timestamp updated_at = 8;
 }
 
 message CreateBotReq {
     string name = 1;
     string api_key = 2;
+    string system_prompt = 3;
 }
 
 message GetBotReq {

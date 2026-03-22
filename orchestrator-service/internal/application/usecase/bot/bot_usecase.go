@@ -47,7 +47,7 @@ func (bu *botUsecase) CreateBot(ctx context.Context, userID uuid.UUID, req *botd
 		slog.String("bot_name", req.Name),
 	)
 
-	bot, err := botdomain.NewBot(userID, req.Name, req.ApiKey)
+	bot, err := botdomain.NewBot(userID, req.Name, req.SystemPrompt, req.ApiKey)
 	if err != nil {
 		return nil, err
 	}
@@ -407,12 +407,13 @@ func (bu *botUsecase) deleteBotFullCycle(ctx context.Context, userID, botID uuid
 
 func (bu *botUsecase) DomainToDTOModel(bot *botdomain.Bot) *botdto.Bot {
 	return &botdto.Bot{
-		ID:        bot.ID(),
-		UserID:    bot.UserID(),
-		BotStatus: bot.Status().Int32(),
-		Name:      bot.Name().String(),
-		LastError: bot.LastError(),
-		CreatedAt: bot.CreatedAt(),
-		UpdatedAt: bot.UpdatedAt(),
+		ID:           bot.ID(),
+		UserID:       bot.UserID(),
+		BotStatus:    bot.Status().Int32(),
+		SystemPrompt: bot.SystemPrompt(),
+		Name:         bot.Name().String(),
+		LastError:    bot.LastError(),
+		CreatedAt:    bot.CreatedAt(),
+		UpdatedAt:    bot.UpdatedAt(),
 	}
 }

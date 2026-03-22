@@ -2,6 +2,7 @@ package botdomain
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -9,14 +10,15 @@ import (
 
 // SECURITY: API key must be encrypted in prod
 type Bot struct {
-	id        uuid.UUID
-	userID    uuid.UUID
-	status    Status
-	name      Name
-	apiKey    ApiKey
-	lastError string
-	createdAt time.Time
-	updatedAt time.Time
+	id           uuid.UUID
+	userID       uuid.UUID
+	status       Status
+	name         Name
+	systemPrompt string
+	apiKey       ApiKey
+	lastError    string
+	createdAt    time.Time
+	updatedAt    time.Time
 }
 
 var (
@@ -24,12 +26,16 @@ var (
 	ErrRecordNotFound     = errors.New("bot not found")
 	ErrInvalidStorageData = errors.New("invalid storage data")
 	ErrNotEnoughRights    = errors.New("not enough rights")
+	ErrEmptySystemPrompt  = errors.New("empty system_prompt")
 )
 
-func NewBot(userID uuid.UUID, name string, apiKey string) (*Bot, error) {
+func NewBot(userID uuid.UUID, name, systemPrompt, apiKey string) (*Bot, error) {
 	n, err := NewName(name)
 	if err != nil {
 		return nil, err
+	}
+	if strings.TrimSpace(systemPrompt) == "" {
+		return nil, ErrEmptySystemPrompt
 	}
 	ak, err := NewApiKey(apiKey)
 	if err != nil {
@@ -37,16 +43,17 @@ func NewBot(userID uuid.UUID, name string, apiKey string) (*Bot, error) {
 	}
 
 	return &Bot{
-		id:     uuid.New(),
-		userID: userID,
-		status: BotStatusCreating,
-		name:   n,
-		apiKey: ak,
+		id:           uuid.New(),
+		userID:       userID,
+		status:       BotStatusCreating,
+		name:         n,
+		systemPrompt: systemPrompt,
+		apiKey:       ak,
 	}, nil
 }
 
 // USE ONLY FOR CREATING BOT FROM REPOSITORY!!!
-func RestoreBot(id, userID uuid.UUID, status int32, name, apiKey, lastError string, createdAt, updatedAt time.Time) (*Bot, error) {
+func RestoreBot(id, userID uuid.UUID, status int32, name, systemPrompt, apiKey, lastError string, createdAt, updatedAt time.Time) (*Bot, error) {
 	s, err := NewStatus(status)
 	if err != nil {
 		return nil, ErrInvalidStorageData
@@ -61,14 +68,15 @@ func RestoreBot(id, userID uuid.UUID, status int32, name, apiKey, lastError stri
 	}
 
 	return &Bot{
-		id:        id,
-		userID:    userID,
-		status:    s,
-		name:      n,
-		apiKey:    ak,
-		lastError: lastError,
-		createdAt: createdAt,
-		updatedAt: updatedAt,
+		id:           id,
+		userID:       userID,
+		status:       s,
+		name:         n,
+		systemPrompt: systemPrompt,
+		apiKey:       ak,
+		lastError:    lastError,
+		createdAt:    createdAt,
+		updatedAt:    updatedAt,
 	}, nil
 }
 
@@ -86,6 +94,10 @@ func (b *Bot) Status() Status {
 
 func (b *Bot) Name() Name {
 	return b.name
+}
+
+func (b *Bot) SystemPrompt() string {
+	return b.systemPrompt
 }
 
 func (b *Bot) ApiKey() ApiKey {

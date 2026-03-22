@@ -25,8 +25,9 @@ func (s *OrchestratorServiceServer) CreateBot(ctx context.Context, req *orchestr
 	}
 
 	bot, err := s.botUsecase.CreateBot(ctx, userID, &botdto.CreateBotReq{
-		Name:   req.Name,
-		ApiKey: req.ApiKey,
+		Name:         req.Name,
+		ApiKey:       req.ApiKey,
+		SystemPrompt: req.SystemPrompt,
 	})
 	if err != nil {
 		return nil, s.grpcError(err)

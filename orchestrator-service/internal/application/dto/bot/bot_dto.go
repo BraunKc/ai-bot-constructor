@@ -7,18 +7,20 @@ import (
 )
 
 type Bot struct {
-	ID        uuid.UUID
-	UserID    uuid.UUID
-	BotStatus int32
-	Name      string
-	LastError string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID           uuid.UUID
+	UserID       uuid.UUID
+	BotStatus    int32
+	SystemPrompt string
+	Name         string
+	LastError    string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 type CreateBotReq struct {
-	Name   string
-	ApiKey string
+	Name         string
+	ApiKey       string
+	SystemPrompt string
 }
 
 type GetBotReq struct {
