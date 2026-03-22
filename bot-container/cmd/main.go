@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"log/slog"
 	"os"
 
@@ -13,8 +14,12 @@ import (
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		slog.Error("failed to load .env", slog.Any("err", err))
-		os.Exit(1)
+		if !errors.Is(err, os.ErrNotExist) {
+			slog.Error("failed to load .env", slog.Any("err", err))
+			os.Exit(1)
+		}
+
+		slog.Debug(".env not found, using environment variables")
 	}
 
 	cfg, err := config.New("./config/config.yml")
