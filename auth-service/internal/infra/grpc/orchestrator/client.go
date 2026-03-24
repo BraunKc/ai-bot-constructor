@@ -2,6 +2,7 @@ package orchestratorgrpc
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 )
 
 type orchestratorClient struct {
@@ -40,7 +42,19 @@ func (oc *orchestratorClient) Close() error {
 func (oc *orchestratorClient) DeleteAllBots(ctx context.Context, userID uuid.UUID) error {
 	oc.log.Debug("deleting all user bots", slog.Any("user_id", userID))
 
-	resp, err := oc.client.DeleteAllBots(ctx, &orchestratorpb.DeleteAllBotsReq{
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return errors.New("missing metadata")
+	}
+
+	authHeaders := md.Get("authorization")
+	if len(authHeaders) == 0 {
+		return errors.New("missing authorization headers")
+	}
+
+	resp, err := oc.client.DeleteAllBots(metadata.NewOutgoingContext(ctx, metadata.MD{
+		"authorization": authHeaders,
+	}), &orchestratorpb.DeleteAllBotsReq{
 		UserId: userID.String(),
 	})
 	if err != nil {

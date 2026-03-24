@@ -56,7 +56,7 @@ func (bu *botUsecase) CreateBot(ctx context.Context, userID uuid.UUID, req *botd
 		return nil, err
 	}
 
-	cmd, err := botcommands.NewCommand(bot.ID(), userID, botcommands.CommandCreate, botcommands.CreatePayload{Name: bot.Name().String(), ApiKey: bot.ApiKey().Raw()})
+	cmd, err := botcommands.NewCommand(bot.ID(), userID, botcommands.CommandCreate, botcommands.CreatePayload{Name: bot.Name().String(), ApiKey: bot.ApiKey().Raw(), SystemPrompt: bot.SystemPrompt()})
 	if err != nil {
 		return nil, err
 	}

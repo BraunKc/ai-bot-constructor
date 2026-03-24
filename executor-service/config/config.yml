@@ -1,0 +1,15 @@
+env: develop
+open-router-token: ${OPEN_ROUTER_TOKEN}
+kafka:
+  host: ${KAFKA_HOST}
+  port: ${KAFKA_PORT}
+db:
+  host: ${DB_HOST}
+  port: ${DB_PORT}
+  name: ${DB_NAME}
+  user: ${DB_USER}
+  password: ${DB_PASSWORD}
+logger:
+  service: executor-service
+  output-type: console
+  level: debug
