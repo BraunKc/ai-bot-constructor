@@ -20,3 +20,18 @@ protoclient:
 	--go_out=${CLIENT_DIR} --go_opt=paths=source_relative \
 	--go-grpc_out=${CLIENT_DIR} --go-grpc_opt=paths=source_relative \
 	contracts/${PROTO_SERVICE}/${PROTO_VERSION}/${PROTO_SERVICE}.proto
+
+dotenvs:
+	cp ./auth-gateway/.env.example ./auth-gateway/.env
+	cp ./auth-service/.env.example ./auth-service/.env
+	cp ./orchestrator-gateway/.env.example ./orchestrator-gateway/.env
+	cp ./orchestrator-service/.env.example ./orchestrator-service/.env
+	cp ./executor-service/.env.example ./executor-service/.env
+	echo "u need to get open router api key (https://openrouter.ai/workspaces/default/keys) and paste it to OPEN_ROUTER_TOKEN at ./executor-service/.env"
+
+docker-builds:
+	docker build -t ai-auth-gateway ./auth-gateway
+	docker build -t ai-auth-service ./auth-service
+	docker build -t ai-orchestrator-gateway ./orchestrator-gateway
+	docker build -t ai-orchestrator-service ./orchestrator-service
+	docker build -t ai-executor-service ./executor-service

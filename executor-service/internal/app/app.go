@@ -36,8 +36,7 @@ func (app *App) initConfig(path string) error {
 
 	cfg, err := config.New(os.Getenv("CONFIG_PATH"))
 	if err != nil {
-		slog.Error("failed to create config", slog.Any("err", err))
-		os.Exit(1)
+		return fmt.Errorf("failed to init config: %w", err)
 	}
 	app.cfg = cfg
 	slog.Debug("cfg created")
@@ -88,18 +87,12 @@ func (app *App) initDB() error {
 		return fmt.Errorf("failed to create database repository: %w", err)
 	}
 
-	if app.cfg.Env == config.Develop {
-		if err := db.AutoMigrate(&botpersistence.Bot{}); err != nil {
-			return fmt.Errorf("failed to migrate tables: %w", err)
-		}
-	}
 	app.db = db
 	app.log.Info("database inited")
 
 	return nil
 }
 
-// TODO: add this shit to init
 func (app *App) initDocker() error {
 	docker, err := docker.New(app.log)
 	if err != nil {

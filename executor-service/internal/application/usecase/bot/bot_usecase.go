@@ -133,5 +133,9 @@ func (bu *botUsecase) Delete(ctx context.Context, userID, botID uuid.UUID) error
 		return fmt.Errorf("failed to delete container: %w", err)
 	}
 
+	if err := bu.botRepo.Delete(ctx, botID); err != nil {
+		return fmt.Errorf("failed to delete bot: %w", err)
+	}
+
 	return nil
 }

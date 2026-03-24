@@ -1,4 +1,23 @@
 services:
+  db:
+    image: postgres:latest
+    container_name: pg
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+      - .env
+    networks:
+      - ai-bot-constructor-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: kafka
@@ -9,16 +28,118 @@ services:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+    command: >
+      sh -c "
+        /etc/confluent/docker/run &
+
+        echo 'waiting kafka...'
+        while ! kafka-broker-api-versions --bootstrap-server localhost:9092 > /dev/null 2>&1; do
+          sleep 2;
+        done;
+        kafka-topics --create --topic bots --bootstrap-server localhost:9092 --if-not-exists --partitions 3 --replication-factor 1;
+        echo 'topic created successfully.';
+
+        wait
+      "
     healthcheck:
       test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 20s
+      start_period: 40s
+    networks:
+      - ai-bot-constructor-network
+
+  auth-gateway:
+    image: ai-auth-gateway:latest
+    container_name: ai-auth-gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - ai-bot-constructor-network
+    pull_policy: never
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+  
+  auth-service:
+    image: ai-auth-service:latest
+    container_name: ai-auth-service
+    ports:
+      - "50050:50050"
+    networks:
+      - ai-bot-constructor-network
+    pull_policy: never
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+
+  orchestrator-gateway:
+    image: ai-orchestrator-gateway:latest
+    container_name: ai-orchestrator-gateway
+    ports:
+      - "8081:8081"
+    networks:
+      - ai-bot-constructor-network
+    pull_policy: never
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+
+  orchestrator-service:
+    image: ai-orchestrator-service:latest
+    container_name: ai-orchestrator-service
+    ports:
+      - "50051:50051"
+    networks:
+      - ai-bot-constructor-network
+    pull_policy: never
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+  
+  executor-service:
+    image: ai-executor-service:latest
+    container_name: ai-executor-service
+    networks:
+      - ai-bot-constructor-network
+    pull_policy: never
+    env_file:
+      - .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      DOCKER_HOST: unix:///var/run/docker.sock
+    depends_on:
+      db:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+
+networks:
+  ai-bot-constructor-network:
+    driver: bridge
