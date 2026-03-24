@@ -71,3 +71,12 @@ func (br *botRepo) Delete(ctx context.Context, id uuid.UUID) error {
 
 	return nil
 }
+
+func (br *botRepo) Close() error {
+	sqlDB, err := br.db.DB()
+	if err != nil {
+		return fmt.Errorf("failed to ger sqlDB: %w", err)
+	}
+
+	return sqlDB.Close()
+}

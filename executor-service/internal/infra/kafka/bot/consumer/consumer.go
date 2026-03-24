@@ -3,6 +3,7 @@ package kafkaconsumer
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"time"
@@ -14,7 +15,7 @@ import (
 )
 
 type KafkaConsumer interface {
-	Consume()
+	Consume(ctx context.Context)
 	Close() error
 }
 
@@ -38,12 +39,15 @@ func New(botUsecase botusecase.BotUsecase, cfg *config.KafkaConfig, log *slog.Lo
 	}
 }
 
-func (kc *kafkaConsumer) Consume() {
+func (kc *kafkaConsumer) Consume(ctx context.Context) {
 	for {
-		msg, err := kc.reader.FetchMessage(context.Background())
+		msg, err := kc.reader.FetchMessage(ctx)
 		if err != nil {
-			kc.log.Error("failed to fetch message", slog.Any("err", err))
+			if errors.Is(err, context.Canceled) {
+				return
+			}
 
+			kc.log.Error("failed to fetch message", slog.Any("err", err))
 			continue
 		}
 
